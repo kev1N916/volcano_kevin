@@ -37,7 +37,7 @@ import (
 func makePods(num int, cpu, mem, podGroupName string) []*v1.Pod {
 	pods := []*v1.Pod{}
 	for i := 0; i < num; i++ {
-		pods = append(pods, 
+		pods = append(pods,
 			util.MakePod().
 				Namespace("default").
 				Name(fmt.Sprintf("%s-p%d", podGroupName, i)).

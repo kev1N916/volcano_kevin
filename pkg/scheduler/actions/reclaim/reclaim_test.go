@@ -230,7 +230,7 @@ func TestReclaim(t *testing.T) {
 					Obj(),
 			},
 			Queues: []*schedulingv1beta1.Queue{
-	
+
 				util.MakeQueue().Name("q1").State(schedulingv1beta1.QueueStateOpen).Weight(1).Capability(nil).Obj(),
 				util.MakeQueue().Name("q2").State(schedulingv1beta1.QueueStateOpen).Weight(1).Capability(nil).Obj(),
 				util.MakeQueue().Name("q3").State(schedulingv1beta1.QueueStateOpen).Weight(1).Capability(nil).Obj(),
@@ -580,12 +580,12 @@ func TestReclaim(t *testing.T) {
 			},
 			Queues: []*schedulingv1beta1.Queue{
 				util.MakeQueue().
-				Name("q1").Weight(1).
-				State(schedulingv1beta1.QueueStateOpen).Capability(nil).
-				Obj(),
+					Name("q1").Weight(1).
+					State(schedulingv1beta1.QueueStateOpen).Capability(nil).
+					Obj(),
 				util.MakeQueue().Name("q2").Weight(1).
-				Capability(nil).
-				State(schedulingv1beta1.QueueStateClosed).Obj(),
+					Capability(nil).
+					State(schedulingv1beta1.QueueStateClosed).Obj(),
 			},
 			ExpectEvictNum: 0,
 			ExpectEvicted:  []string{},

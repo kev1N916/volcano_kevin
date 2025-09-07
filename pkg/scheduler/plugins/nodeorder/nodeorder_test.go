@@ -79,7 +79,7 @@ func TestNodeOrderPlugin(t *testing.T) {
 						Obj(),
 				},
 				Nodes: []*v1.Node{
-				
+
 					util.MakeNode().
 						Name("n1").
 						Allocatable(api.BuildResourceList("2", "4Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).
@@ -133,7 +133,7 @@ func TestNodeOrderPlugin(t *testing.T) {
 						Obj(),
 				},
 				Nodes: []*v1.Node{
-				
+
 					util.MakeNode().
 						Name("n1").
 						Allocatable(api.BuildResourceList("2", "4Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).

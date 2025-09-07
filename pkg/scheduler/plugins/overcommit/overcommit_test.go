@@ -82,7 +82,7 @@ func TestOvercommitPlugin(t *testing.T) {
 		MinTaskMember(nil).
 		Phase(schedulingv1.PodGroupPhase(scheduling.PodGroupInqueue)).
 		Obj()
-	
+
 	queue1 := util.MakeQueue().Name("c1").Weight(1).Capability(nil).Obj()
 	queue2 := util.MakeQueue().Name("c1").Weight(1).Capability(smallResource).Obj()
 

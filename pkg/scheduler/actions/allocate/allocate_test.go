@@ -2126,7 +2126,7 @@ func TestAllocateWithNetWorkTopologies(t *testing.T) {
 					Obj(),
 			},
 			Nodes: []*v1.Node{
-			
+
 				util.MakeNode().
 					Name("s3-n1").
 					Allocatable(api.BuildResourceList("2", "4Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).
@@ -3016,7 +3016,7 @@ func TestFareShareAllocate(t *testing.T) {
 					Obj(),
 			},
 			Queues: []*schedulingv1.Queue{
-				
+
 				util.MakeQueue().Name("q-1").Weight(1).Capability(nil).State(schedulingv1.QueueStateOpen).Obj(),
 				util.MakeQueue().Name("q-2").Weight(1).Capability(nil).State(schedulingv1.QueueStateOpen).Obj(),
 			},
@@ -3028,7 +3028,7 @@ func TestFareShareAllocate(t *testing.T) {
 		{
 			Name: "queue's DRF share value will be updated and its priority will change before it is put back into the priority queue",
 			PodGroups: []*schedulingv1.PodGroup{
-				
+
 				util.MakePodGroup().
 					Name("pg-small-1").
 					Namespace("ns-1").

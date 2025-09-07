@@ -46,7 +46,6 @@ func TestNodeGroup(t *testing.T) {
 		NodeSelector(make(map[string]string)).
 		Obj()
 
-	
 	p2 := util.MakePod().
 		Namespace("c1").
 		Name("p2").
@@ -58,7 +57,6 @@ func TestNodeGroup(t *testing.T) {
 		NodeSelector(make(map[string]string)).
 		Obj()
 
-	
 	n1 := util.MakeNode().
 		Name("n1").
 		Allocatable(api.BuildResourceList("2", "4Gi")).
@@ -78,7 +76,6 @@ func TestNodeGroup(t *testing.T) {
 			NodeGroupNameKey: "group2",
 		}).
 		Obj()
-	
 
 	n3 := util.MakeNode().
 		Name("n3").
@@ -90,7 +87,6 @@ func TestNodeGroup(t *testing.T) {
 		}).
 		Obj()
 
-	
 	n4 := util.MakeNode().
 		Name("n4").
 		Allocatable(api.BuildResourceList("4", "16Gi")).
@@ -110,7 +106,7 @@ func TestNodeGroup(t *testing.T) {
 			NodeGroupNameKey: "group5",
 		}).
 		Obj()
-	
+
 	pg1 := util.MakePodGroup().
 		Name("pg1").
 		Namespace("c1").

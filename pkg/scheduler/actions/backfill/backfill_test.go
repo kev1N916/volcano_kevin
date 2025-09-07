@@ -160,7 +160,7 @@ func TestPickUpPendingTasks(t *testing.T) {
 					Priority(&priority3).
 					Obj(),
 			},
-			pipelinedPods: []*v1.Pod{	
+			pipelinedPods: []*v1.Pod{
 				util.MakePod().
 					Namespace("default").
 					Name("pg1-besteffort-task-2").

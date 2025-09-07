@@ -101,7 +101,7 @@ func TestEventHandler(t *testing.T) {
 	w3.Spec.Affinity = getWorkerAffinity()
 
 	// nodes
-	
+
 	n1 := util.MakeNode().
 		Name("node1").
 		Allocatable(api.BuildResourceList("14", "14k", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).
@@ -315,7 +315,7 @@ func TestPodAntiAffinity(t *testing.T) {
 		PluginName:          New,
 		priority.PluginName: priority.New,
 	}
-	
+
 	highPrio := util.MakePriorityClass().Name("high-priority").SetValue(100000).Obj()
 	lowPrio := util.MakePriorityClass().Name("low-priority").SetValue(10).Obj()
 

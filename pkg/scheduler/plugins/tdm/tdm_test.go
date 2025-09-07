@@ -450,7 +450,6 @@ func Test_TDM_victimsFn(t *testing.T) {
 	p9.Annotations[schedulingv2.PodPreemptable] = "true"
 	p10.Annotations[schedulingv2.PodPreemptable] = "true"
 
-
 	n1 := util.MakeNode().
 		Name("n1").
 		Allocatable(api.BuildResourceList("16", "64Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).

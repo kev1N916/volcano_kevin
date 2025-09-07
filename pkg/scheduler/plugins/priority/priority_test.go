@@ -136,7 +136,7 @@ func TestPreempt(t *testing.T) {
 						Obj(),
 				},
 				Nodes: []*v1.Node{
-					
+
 					util.MakeNode().
 						Name("node1").
 						Allocatable(api.BuildResourceList("6", "6G", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).

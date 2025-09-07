@@ -169,14 +169,14 @@ func TestNode(t *testing.T) {
 		Obj()
 	addResource(n3.Status.Allocatable, FOO, "16")
 
-	pg1:=util.MakePodGroup().
-						Name("pg1").
-						Namespace("c1").
-						Queue("c1").
-						MinMember(0).
-						MinTaskMember(nil).
-						Phase("").
-						Obj()
+	pg1 := util.MakePodGroup().
+		Name("pg1").
+		Namespace("c1").
+		Queue("c1").
+		MinMember(0).
+		MinTaskMember(nil).
+		Phase("").
+		Obj()
 	queue1 := util.MakeQueue().Name("c1").Weight(1).Capability(nil).Obj()
 	tests := []struct {
 		uthelper.TestCommonStruct

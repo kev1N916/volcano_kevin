@@ -1506,7 +1506,7 @@ func TestTopologyAwarePreempt(t *testing.T) {
 					Namespace("c1").
 					Queue("q1").
 					MinMember(1).
-					MinTaskMember(map[string]int32{"":1}).
+					MinTaskMember(map[string]int32{"": 1}).
 					Phase(schedulingv1beta1.PodGroupInqueue).
 					PriorityClassName("high-priority").
 					Obj(),

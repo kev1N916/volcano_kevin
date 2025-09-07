@@ -393,7 +393,7 @@ func TestEnqueueAndAllocable(t *testing.T) {
 	res1c0g := api.BuildResourceList("1", "0G")
 	res0c1g := api.BuildResourceList("0", "1G")
 	res1c1g := api.BuildResourceList("1", "1G")
-	
+
 	// pod
 	p1 := util.MakePod().
 		Namespace("ns1").

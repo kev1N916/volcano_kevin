@@ -1876,7 +1876,7 @@ func TestNetworkTopologyAwareNodeScore(t *testing.T) {
 						Obj(),
 				},
 				Nodes: []*v1.Node{
-					
+
 					util.MakeNode().
 						Name("s1-n1").
 						Allocatable(api.BuildResourceList("2", "4Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).
@@ -2010,7 +2010,7 @@ func TestNetworkTopologyAwareNodeScore(t *testing.T) {
 						Obj(),
 				},
 				Nodes: []*v1.Node{
-		
+
 					util.MakeNode().
 						Name("s3-n1").
 						Allocatable(api.BuildResourceList("2", "4Gi", []api.ScalarResource{{Name: "pods", Value: "10"}}...)).

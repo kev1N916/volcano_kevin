@@ -31,6 +31,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
+
 	schedulingv1beta1 "volcano.sh/apis/pkg/apis/scheduling/v1beta1"
 	"volcano.sh/volcano/pkg/scheduler/api"
 )
@@ -339,7 +340,6 @@ func (wrapper *DeviceRequestWrapper) SetSelectors(selectors []resourcev1beta1.De
 }
 
 func (wrapper *DeviceRequestWrapper) SetAllocationMode(allocationMode *resourcev1beta1.DeviceAllocationMode) *DeviceRequestWrapper {
-
 	if allocationMode != nil {
 		wrapper.AllocationMode = *allocationMode
 	}

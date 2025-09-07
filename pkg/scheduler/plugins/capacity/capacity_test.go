@@ -277,9 +277,9 @@ func Test_capacityPlugin_OnSessionOpenWithoutHierarchy(t *testing.T) {
 		NodeSelector(make(map[string]string)).
 		Obj()
 
-		// podgroup
+	// podgroup
 
-		pg7 := util.MakePodGroup().
+	pg7 := util.MakePodGroup().
 		Name("pg7").
 		Namespace("ns1").
 		Queue("q5").
@@ -423,9 +423,9 @@ func Test_capacityPlugin_OnSessionOpenWithoutHierarchy(t *testing.T) {
 		Labels(make(map[string]string)).
 		NodeSelector(nil).
 		Obj()
-		// podgroup
-		
-		pg16 := util.MakePodGroup().
+	// podgroup
+
+	pg16 := util.MakePodGroup().
 		Name("pg16").
 		Namespace("ns1").
 		Queue("q10").
@@ -821,7 +821,7 @@ func Test_capacityPlugin_OnSessionOpenWithHierarchy(t *testing.T) {
 	// queue
 	root := util.MakeQueue().Name("root").Parent("").Deserved(nil).Capability(nil).Weight(1).Obj()
 	root1 := util.MakeQueue().Name("root").Parent("").Deserved(nil).Capability(api.BuildResourceList("16", "16Gi")).Weight(1).Obj()
-	
+
 	queue1 := util.MakeQueue().Name("q1").Parent("root").Deserved(nil).Capability(api.BuildResourceList("4", "4Gi")).Weight(1).Obj()
 	queue2 := util.MakeQueue().State(schedulingv1beta1.QueueStateOpen).Name("q2").Parent("root").Deserved(nil).Capability(api.BuildResourceList("4", "4Gi")).Weight(1).Obj()
 	queue11 := util.MakeQueue().State(schedulingv1beta1.QueueStateOpen).Name("q11").Parent("q1").Deserved(nil).Capability(api.BuildResourceList("1", "1Gi")).Weight(1).Obj()
