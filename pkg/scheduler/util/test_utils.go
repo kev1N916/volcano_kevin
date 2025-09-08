@@ -22,6 +22,7 @@ package util
 
 import (
 	"fmt"
+	"maps"
 	"sync"
 
 	v1 "k8s.io/api/core/v1"
@@ -46,6 +47,7 @@ func MakeNode() *NodeWrapper {
 	return &NodeWrapper{
 		Node: v1.Node{
 			ObjectMeta: metav1.ObjectMeta{
+				Labels:      map[string]string{},
 				Annotations: map[string]string{},
 			},
 			Status: v1.NodeStatus{
@@ -58,7 +60,7 @@ func MakeNode() *NodeWrapper {
 }
 
 func (n *NodeWrapper) Annotations(annotations map[string]string) *NodeWrapper {
-	n.ObjectMeta.Annotations = annotations
+	maps.Copy(n.ObjectMeta.Annotations, annotations)
 	return n
 }
 
@@ -68,17 +70,17 @@ func (n *NodeWrapper) Name(name string) *NodeWrapper {
 }
 
 func (n *NodeWrapper) Labels(labels map[string]string) *NodeWrapper {
-	n.ObjectMeta.Labels = labels
+	maps.Copy(n.ObjectMeta.Labels, labels)
 	return n
 }
 
 func (n *NodeWrapper) Allocatable(allocatable v1.ResourceList) *NodeWrapper {
-	n.Status.Allocatable = allocatable
+	n.Status.Allocatable = allocatable.DeepCopy()
 	return n
 }
 
 func (n *NodeWrapper) Capacity(capacity v1.ResourceList) *NodeWrapper {
-	n.Status.Capacity = capacity
+	n.Status.Capacity = capacity.DeepCopy()
 	return n
 }
 
@@ -98,6 +100,43 @@ func BuildCSINode(name string, annotations map[string]string, drivers []storagev
 	}
 }
 
+type ContainerWrapper struct {
+	v1.Container
+}
+
+// NewContainer creates a new ContainerWrapper.
+func NewContainer() *ContainerWrapper {
+	return &ContainerWrapper{
+		Container: v1.Container{
+			Resources: v1.ResourceRequirements{},
+		},
+	}
+}
+
+func (c *ContainerWrapper) SetName(name string) *ContainerWrapper {
+	c.Name = name
+	return c
+}
+
+func (c *ContainerWrapper) SetImage(image string) *ContainerWrapper {
+	c.Image = image
+	return c
+}
+
+func (c *ContainerWrapper) Requests(req v1.ResourceList) *ContainerWrapper {
+	c.Resources.Requests = req
+	return c
+}
+
+func (c *ContainerWrapper) Limits(lim v1.ResourceList) *ContainerWrapper {
+	c.Resources.Limits = lim
+	return c
+}
+
+func (c *ContainerWrapper) Obj() *v1.Container {
+	return &c.Container
+}
+
 // PodWrapper wraps a Kubernetes Pod.
 type PodWrapper struct {
 	v1.Pod
@@ -107,6 +146,7 @@ func MakePod() *PodWrapper {
 	return &PodWrapper{
 		Pod: v1.Pod{
 			ObjectMeta: metav1.ObjectMeta{
+				Labels:      map[string]string{},
 				Annotations: map[string]string{},
 			},
 			Status: v1.PodStatus{},
@@ -114,13 +154,14 @@ func MakePod() *PodWrapper {
 				Containers: []v1.Container{
 					{},
 				},
+				NodeSelector: map[string]string{},
 			},
 		},
 	}
 }
 
 func (n *PodWrapper) Labels(labels map[string]string) *PodWrapper {
-	n.ObjectMeta.Labels = labels
+	maps.Copy(n.ObjectMeta.Labels, labels)
 	return n
 }
 
@@ -135,7 +176,7 @@ func (n *PodWrapper) Name(name string) *PodWrapper {
 }
 
 func (n *PodWrapper) Annotations(annons map[string]string) *PodWrapper {
-	n.ObjectMeta.Annotations = annons
+	maps.Copy(n.ObjectMeta.Annotations, annons)
 	return n
 }
 
@@ -150,12 +191,15 @@ func (n *PodWrapper) NodeName(nodeName string) *PodWrapper {
 }
 
 func (n *PodWrapper) GroupName(groupName string) *PodWrapper {
+	if n.ObjectMeta.Annotations == nil {
+		n.ObjectMeta.Annotations = map[string]string{}
+	}
 	n.ObjectMeta.Annotations[schedulingv1beta1.KubeGroupNameAnnotationKey] = groupName
 	return n
 }
 
 func (n *PodWrapper) NodeSelector(selector map[string]string) *PodWrapper {
-	n.Spec.NodeSelector = selector
+	maps.Copy(n.Spec.NodeSelector, selector)
 	return n
 }
 
@@ -179,6 +223,11 @@ func (n *PodWrapper) ContainerClaimRequests(claimReq []v1.ResourceClaim) *PodWra
 	return n
 }
 
+func (n *PodWrapper) ResourceList(req v1.ResourceList) *PodWrapper {
+	n.Spec.Containers[0].Resources.Requests = req
+	return n
+}
+
 func (n *PodWrapper) PreEmptionPolicy(preemptionPolicy v1.PreemptionPolicy) *PodWrapper {
 	n.Spec.PreemptionPolicy = &preemptionPolicy
 	return n
@@ -194,33 +243,53 @@ func (n *PodWrapper) Volumes(volumes []v1.Volume) *PodWrapper {
 	return n
 }
 
-func (n *PodWrapper) ResourceList(req v1.ResourceList) *PodWrapper {
-	n.Spec.Containers[0].Resources.Requests = req
-	return n
-}
-
 func (n *PodWrapper) PersistentVolumeClaim(pvc *v1.PersistentVolumeClaim) *PodWrapper {
+	if n.Spec.Volumes == nil {
+		n.Spec.Volumes = make([]v1.Volume, 0)
+	}
+
+	newVolume := v1.Volume{
+		Name: pvc.Name,
+		VolumeSource: v1.VolumeSource{
+			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{
+				ClaimName: pvc.Name,
+			},
+		},
+	}
+
+	exists := false
+	for _, volume := range n.Spec.Volumes {
+		if volume.Name == newVolume.Name {
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
+		n.Spec.Volumes = append(n.Spec.Volumes, newVolume)
+	}
+
 	n.Spec.Containers[0].VolumeMounts = []v1.VolumeMount{
 		{
 			Name:      pvc.Name,
 			MountPath: "/data",
 		},
 	}
-	n.Spec.Volumes = []v1.Volume{
-		{
-			Name: pvc.Name,
-			VolumeSource: v1.VolumeSource{
-				PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{
-					ClaimName: pvc.Name,
-				},
-			},
-		},
-	}
 	return n
 }
 
 func (n *PodWrapper) Containers(containers []v1.Container) *PodWrapper {
-	n.Spec.Containers = containers
+	if containers != nil {
+		n.Spec.Containers = containers
+	}
+	return n
+}
+
+func (n *PodWrapper) Container(container v1.Container) *PodWrapper {
+	if n.Spec.Containers == nil {
+		n.Spec.Containers = make([]v1.Container, 0)
+	}
+	n.Spec.Containers = append(n.Spec.Containers, container)
 	return n
 }
 
@@ -333,9 +402,7 @@ func (wrapper *DeviceRequestWrapper) SetDeviceClassName(name string) *DeviceRequ
 }
 
 func (wrapper *DeviceRequestWrapper) SetSelectors(selectors []resourcev1beta1.DeviceSelector) *DeviceRequestWrapper {
-	if selectors != nil {
-		wrapper.Selectors = selectors
-	}
+	wrapper.Selectors = selectors
 	return wrapper
 }
 
@@ -386,9 +453,7 @@ func (wrapper *ResourceClaimWrapper) Namespace(namespace string) *ResourceClaimW
 }
 
 func (wrapper *ResourceClaimWrapper) Constraints(constraints []resourcev1beta1.DeviceConstraint) *ResourceClaimWrapper {
-	if constraints != nil {
-		wrapper.Spec.Devices.Constraints = constraints
-	}
+	wrapper.Spec.Devices.Constraints = constraints
 	return wrapper
 }
 
@@ -556,7 +621,9 @@ type PodGroupWrapper struct {
 func MakePodGroup() *PodGroupWrapper {
 	return &PodGroupWrapper{
 		PodGroup: schedulingv1beta1.PodGroup{
-			ObjectMeta: metav1.ObjectMeta{},
+			ObjectMeta: metav1.ObjectMeta{
+				Annotations: map[string]string{},
+			},
 			Spec: schedulingv1beta1.PodGroupSpec{
 				NetworkTopology: &schedulingv1beta1.NetworkTopologySpec{},
 			},
@@ -569,13 +636,16 @@ func (wrapper *PodGroupWrapper) Name(name string) *PodGroupWrapper {
 	wrapper.ObjectMeta.Name = name
 	return wrapper
 }
-func (wrapper *PodGroupWrapper) SetAnnotations(annos map[string]string) *PodGroupWrapper {
-	wrapper.Annotations = annos
+func (wrapper *PodGroupWrapper) Annotations(annos map[string]string) *PodGroupWrapper {
+	wrapper.ObjectMeta.Annotations = annos
 	return wrapper
 }
 
 func (wrapper *PodGroupWrapper) HyperNodeName(hyperNodeName string) *PodGroupWrapper {
-	wrapper.ObjectMeta.Annotations = map[string]string{api.JobAllocatedHyperNode: hyperNodeName}
+	if wrapper.ObjectMeta.Annotations == nil {
+		wrapper.ObjectMeta.Annotations = make(map[string]string)
+	}
+	wrapper.ObjectMeta.Annotations[api.JobAllocatedHyperNode] = hyperNodeName
 	return wrapper
 }
 
@@ -615,7 +685,9 @@ func (wrapper *PodGroupWrapper) MinTaskMember(minTaskMember map[string]int32) *P
 }
 
 func (wrapper *PodGroupWrapper) MinResources(minResources v1.ResourceList) *PodGroupWrapper {
-	wrapper.Spec.MinResources = &minResources
+	if minResources != nil {
+		wrapper.Spec.MinResources = &minResources
+	}
 	return wrapper
 }
 
@@ -653,8 +725,10 @@ func (wrapper *ResourceQuotaWrapper) Namespace(namespace string) *ResourceQuotaW
 }
 
 func (wrapper *ResourceQuotaWrapper) HardResourceLimit(hard v1.ResourceList) *ResourceQuotaWrapper {
-	wrapper.Spec.Hard = hard
-	wrapper.Status.Hard = hard
+	if hard != nil {
+		wrapper.Spec.Hard = hard
+		wrapper.Status.Hard = hard
+	}
 	return wrapper
 }
 
@@ -669,9 +743,11 @@ type QueueWrapper struct {
 func MakeQueue() *QueueWrapper {
 	return &QueueWrapper{
 		Queue: schedulingv1beta1.Queue{
-			ObjectMeta: metav1.ObjectMeta{},
-			Spec:       schedulingv1beta1.QueueSpec{},
-			Status:     schedulingv1beta1.QueueStatus{},
+			ObjectMeta: metav1.ObjectMeta{
+				Annotations: map[string]string{},
+			},
+			Spec:   schedulingv1beta1.QueueSpec{},
+			Status: schedulingv1beta1.QueueStatus{},
 		},
 	}
 }
@@ -682,6 +758,10 @@ func (wrapper *QueueWrapper) Name(name string) *QueueWrapper {
 }
 
 func (wrapper *QueueWrapper) Annotations(annos map[string]string) *QueueWrapper {
+	if wrapper.ObjectMeta.Annotations == nil {
+		wrapper.ObjectMeta.Annotations = make(map[string]string)
+	}
+	maps.Copy(wrapper.ObjectMeta.Annotations, annos)
 	wrapper.ObjectMeta.Annotations = annos
 	return wrapper
 }
@@ -691,7 +771,10 @@ func (wrapper *QueueWrapper) Weight(weight int32) *QueueWrapper {
 }
 
 func (wrapper *QueueWrapper) Capability(cap v1.ResourceList) *QueueWrapper {
-	wrapper.Spec.Capability = cap
+	if cap == nil {
+		return wrapper
+	}
+	wrapper.Spec.Capability = cap.DeepCopy()
 	return wrapper
 }
 

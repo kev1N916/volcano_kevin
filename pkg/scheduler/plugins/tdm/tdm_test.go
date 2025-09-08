@@ -488,7 +488,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "30%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "30%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -518,7 +518,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "30%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "30%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -548,7 +548,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "99%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "99%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -578,7 +578,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "50%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "50%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -608,7 +608,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "50%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "50%"}).
 						Obj(),
 					util.MakePodGroup().
 						Name("pg1").
@@ -617,7 +617,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "90%"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "90%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -648,7 +648,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "3"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "3"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -678,7 +678,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMinAvailable: "3"}).
+						Annotations(map[string]string{schedulingv2.JDBMinAvailable: "3"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -708,7 +708,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMinAvailable: "30%"}).
+						Annotations(map[string]string{schedulingv2.JDBMinAvailable: "30%"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
@@ -738,7 +738,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMinAvailable: "2"}).
+						Annotations(map[string]string{schedulingv2.JDBMinAvailable: "2"}).
 						Obj(),
 					util.MakePodGroup().
 						Name("pg1").
@@ -747,7 +747,7 @@ func Test_TDM_victimsFn(t *testing.T) {
 						MinMember(0).
 						MinTaskMember(nil).
 						Phase("").
-						SetAnnotations(map[string]string{schedulingv2.JDBMaxUnavailable: "3"}).
+						Annotations(map[string]string{schedulingv2.JDBMaxUnavailable: "3"}).
 						Obj(),
 				},
 				Queues: []*schedulingv2.Queue{
